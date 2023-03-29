@@ -34,16 +34,15 @@ public class Main {
     }
 
     public static Runnable runnable(int length, AtomicInteger atomicInteger, String[] texts) {
-        Runnable runText = () -> {
-            for (int i = 0; i < texts.length; i++) {
-                if (texts[i].length() == length) {
-                    if (checkEquals(texts[i]) == true || checkSymmetry(texts[i]) == true || checkIncrease(texts[i]) == true) {
+        return () -> {
+            for (String text : texts) {
+                if (text.length() == length) {
+                    if (checkEquals(text) || checkSymmetry(text) || checkIncrease(text)) {
                         atomicInteger.getAndIncrement();
                     }
                 }
             }
         };
-        return runText;
     }
 
     public static boolean checkSymmetry(String text) {
@@ -56,10 +55,7 @@ public class Main {
             }
             symmetry[j] = true;
         }
-        if (Arrays.equals(isSymmetry, symmetry)) {
-            return true;
-        }
-        return false;
+        return Arrays.equals(isSymmetry, symmetry);
     }
 
     public static boolean checkEquals(String text) {
@@ -75,10 +71,7 @@ public class Main {
             }
             textEquals[j] = true;
         }
-        if (Arrays.equals(textEquals, isEquals)) {
-            return true;
-        }
-        return false;
+        return Arrays.equals(textEquals, isEquals);
     }
 
     public static boolean checkIncrease(String text) {
@@ -91,10 +84,7 @@ public class Main {
             }
             increase[j] = true;
         }
-        if (Arrays.equals(isIncrease, increase)) {
-            return true;
-        }
-        return false;
+        return Arrays.equals(isIncrease, increase);
     }
 
     public static String generateText(String letters, int length) {
