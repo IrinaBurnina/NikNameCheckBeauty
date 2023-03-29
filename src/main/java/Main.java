@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
@@ -17,64 +14,64 @@ public class Main {
         for (int i = 0; i < texts.length; i++) {
             texts[i] = generateText(LETTERS, 3 + random.nextInt(3));
         }
-        List<Thread> threadList = new ArrayList<>();
-        Thread threadCounter3 = new Thread(runnable(3, counter3, texts));
-        Thread threadCounter4 = new Thread(runnable(4, counter4, texts));
-        Thread threadCounter5 = new Thread(runnable(5, counter5, texts));
-        threadList.add(threadCounter3);
-        threadList.add(threadCounter4);
-        threadList.add(threadCounter5);
-        for (Thread thread : threadList) {
-            thread.start();
-            thread.join();
-        }
+        checkBeauty(3, texts, counter3);
+        checkBeauty(4, texts, counter4);
+        checkBeauty(5, texts, counter5);
         System.out.println("Красивых слов с длиной 3: " + counter3.get() + " шт." +
                 "\nКрасивых слов с длиной 4: " + counter4.get() + " шт." +
                 "\nКрасивых слов с длиной 5: " + counter5.get() + " шт.");
     }
 
-    public static Runnable runnable(int length, AtomicInteger atomicInteger, String[] texts) {
-        return () -> {
-            for (String text : texts) {
-                if (text.length() == length) {
-                    if (checkEquals(text) || checkSymmetry(text) || checkIncrease(text)) {
+    public static void checkBeauty(int length, String[] texts, AtomicInteger atomicInteger) throws InterruptedException {
+        for (String text : texts) {
+            if (text.length() == length) {
+                Thread thread1 = new Thread(() -> {
+                    if (checkIncrease(text)) {
                         atomicInteger.getAndIncrement();
                     }
-                }
+                });
+                Thread thread2 = new Thread(() -> {
+                    if (checkSymmetry(text)) {
+                        atomicInteger.getAndIncrement();
+                    }
+                });
+                Thread thread3 = new Thread(() -> {
+                    if (checkEquals(text)) {
+                        atomicInteger.getAndIncrement();
+                    }
+                });
+                thread1.start();
+                thread2.start();
+                thread3.start();
+
+                thread1.join();
+                thread2.join();
+                thread3.join();
             }
-        };
+        }
     }
 
+
     public static boolean checkSymmetry(String text) {
-        int textLine = text.length();
-        boolean[] isSymmetry = new boolean[textLine / 2];
-        boolean[] symmetry = new boolean[textLine / 2];
-        for (int j = 0; j < textLine / 2; j++) {
-            if (text.charAt(j) == text.charAt(textLine - j - 1)) {
-                isSymmetry[j] = true;
-            }
-            symmetry[j] = true;
-        }
-        return Arrays.equals(isSymmetry, symmetry);
+        StringBuilder sb = new StringBuilder(text);
+        return text.equals(sb.reverse().toString());
     }
 
     public static boolean checkEquals(String text) {
-        int textLine = text.length();
-        boolean[] isEquals = new boolean[textLine];
-        boolean[] textEquals = new boolean[textLine];
-        char d = text.charAt(0);
-        isEquals[0] = true;
-        textEquals[0] = true;
-        for (int j = 1; j < textLine; j++) {
-            if (text.charAt(j) == d) {
-                isEquals[j] = true;
-            }
-            textEquals[j] = true;
-        }
-        return Arrays.equals(textEquals, isEquals);
+        return text.chars().allMatch(x -> x == text.charAt(0));
     }
 
     public static boolean checkIncrease(String text) {
+//        List <String> arrayText= text.lines()
+//                .map(s -> s.split(""))
+//                .flatMap(Arrays::stream)
+//                .collect(Collectors.toList());
+//       List<String> list=text.lines()
+//               .map(s->s.split(""))
+//                .flatMap(Arrays::stream).sorted()
+//                .collect(Collectors.toList());
+//        return arrayText.equals(list);
+
         int textLine = text.length();
         boolean[] isIncrease = new boolean[textLine - 1];
         boolean[] increase = new boolean[textLine - 1];
