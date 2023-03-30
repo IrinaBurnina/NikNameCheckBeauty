@@ -43,14 +43,12 @@ public class Main {
                 thread1.start();
                 thread2.start();
                 thread3.start();
-
                 thread1.join();
                 thread2.join();
                 thread3.join();
             }
         }
     }
-
 
     public static boolean checkSymmetry(String text) {
         StringBuilder sb = new StringBuilder(text);
@@ -62,16 +60,6 @@ public class Main {
     }
 
     public static boolean checkIncrease(String text) {
-//        List <String> arrayText= text.lines()
-//                .map(s -> s.split(""))
-//                .flatMap(Arrays::stream)
-//                .collect(Collectors.toList());
-//       List<String> list=text.lines()
-//               .map(s->s.split(""))
-//                .flatMap(Arrays::stream).sorted()
-//                .collect(Collectors.toList());
-//        return arrayText.equals(list);
-
         int textLine = text.length();
         boolean[] isIncrease = new boolean[textLine - 1];
         boolean[] increase = new boolean[textLine - 1];
